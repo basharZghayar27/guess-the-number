@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-, "../bord-game/src/components/ranking-board", "../board-game/src/hooks/use-socket"  ]
+  ]
 }

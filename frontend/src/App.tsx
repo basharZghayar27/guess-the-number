@@ -18,7 +18,7 @@ function App() {
   );
   return (
     <div className="App">
-      <Container fluid className="bg-dark text-light vh-100 p-5">
+      <Container fluid className="bg-dark text-light vh-100 p-3">
         <Row className="mb-3" style={{ height: "calc(65% - 0.5rem)" }}>
           <Col md={4} className="d-flex flex-column">
             {!isConnected ? <SignUp /> : <Dashboard />}
@@ -47,24 +47,7 @@ function App() {
             <Card className="bg-dark text-light h-100">
               <Card.Body>
                 <Card.Title>Ranking</Card.Title>
-                <Table striped bordered hover variant="dark">
-                  <thead>
-                    <tr>
-                      <th>No.</th>
-                      <th>Name</th>
-                      <th>Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...Array(5)].map((_, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>-</td>
-                        <td>-</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+               
               </Card.Body>
             </Card>
           </Col>
@@ -72,20 +55,7 @@ function App() {
             <Card className="bg-dark text-light h-100">
               <Card.Body>
                 <Card.Title>Chat</Card.Title>
-                <div
-                  className="chat-area"
-                  style={{ height: "150px", overflowY: "auto" }}
-                >
-                  {/* Chat messages would go here */}
-                </div>
-                <Form className="mt-3 d-flex">
-                  <Form.Control
-                    type="text"
-                    placeholder="Type your message..."
-                    className="me-2"
-                  />
-                  <Button variant="danger">Start</Button>
-                </Form>
+                
               </Card.Body>
             </Card>
           </Col>
