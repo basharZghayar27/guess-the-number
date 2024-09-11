@@ -23,11 +23,13 @@ const io = new Server(server, {
 let players = [];
 /** @type {Player[]} */
 let generatedPlayers = [];
+/** @type {Player} */
+let currentPlayer = {};
 
-// Utility function to generate random values between 0 and 10.00
+let gameBet = 0;
+
 const getRandomValue = () => Number((Math.random() * 10).toFixed(2));
 
-// Create 4 random players with 1000 points
 const generatePlayers = () => {
   for (let i = 0; i < 4; i++) {
     const player = {
@@ -38,7 +40,6 @@ const generatePlayers = () => {
   }
 };
 
-// Utility function to get a random player name
 const getRandomPlayerName = () => {
   const allPlayers = [...players, ...generatedPlayers];
   if (allPlayers.length === 0) return "Unknown Player";
@@ -46,40 +47,45 @@ const getRandomPlayerName = () => {
   return allPlayers[randomIndex].playerName;
 };
 
-// Handle socket.io connections
 io.on("connection", (socket) => {
-  console.log("A player connected", socket.id);
-
-  // When a player is created
   socket.on("createPlayer", (playerName) => {
     players = [];
+    currentPlayer = { ...currentPlayer, playerName: playerName };
     const player = {
       playerName,
       points: 1000,
     };
     players.push(player);
-    // Send the list of generated players along with the newly created player
     if (generatedPlayers.length === 0) generatePlayers();
     socket.emit("playerList", [...players, ...generatedPlayers]);
   });
 
-  // Handle the 'startGame' action
-  socket.on("startGame", ({ betPoints, detectedValue }) => {
-    // Generate random values for the 4 generated players
-    generatedPlayers = generatedPlayers.map((player) => {
+  socket.on("startGame", ({ playerName, betPoints, detectedValue }) => {
+    gameBet = getRandomValue();
+    const allPlayers = [...players, ...generatedPlayers];
+    const roundPoints = betPoints * detectedValue;
+    generatedPlayers = allPlayers.map((player) => {
       const multiplier = getRandomValue();
-      return {
-        ...player,
-        points: player.points - betPoints,
-        roundPoints: Number((Math.random() * player.points).toFixed(0)),
-        detectedValue: multiplier,
-      };
+      if (playerName !== player.playerName) {
+        return {
+          ...player,
+          points: player.points - betPoints * multiplier,
+          roundPoints: betPoints * multiplier,
+          detectedValue: multiplier,
+        };
+      } else {
+        return {
+          ...player,
+          points: player.points - roundPoints,
+          roundPoints: roundPoints,
+          detectedValue: detectedValue,
+        };
+      }
     });
-    // Emit the updated player details to all clients
-    socket.emit("gameResult", generatedPlayers);
+    socket.emit("gameStarted", generatedPlayers);
+    socket.emit("gameResult", gameBet);
   });
 
-  // Send random messages to a player via socket
   socket.on("messageToPlayer", (message) => {
     const randomMessage = `Random Message: ${Math.random()
       .toString(36)
@@ -91,8 +97,9 @@ io.on("connection", (socket) => {
     });
   });
 
-  // Handle player disconnection
   socket.on("disconnect", () => {
+    players = [];
+    generatedPlayers = [];
     console.log("A player disconnected", socket.id);
   });
 });

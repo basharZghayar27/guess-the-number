@@ -1,12 +1,19 @@
-import { Button, Col, Flex, Row, Slider, Typography } from "antd";
 import React from "react";
+import { Button, Col, Flex, Row, Slider, Typography } from "antd";
 import NumberInput from "../shared/NumberInput";
 import ResultTable from "../shared/ResultTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setRoundPoints, setRoundDetectedValue } from "../../store/playerSlice";
+import { useSocket } from "../../hooks/use-socket/useSocket";
 
-const Dashboard = () => {
-  const { players } = useSelector((state: any) => {
+const Dashboard: React.FC = () => {
+  const dispatch = useDispatch();
+  const { startGame } = useSocket();
+  const { currentPlayer } = useSelector((state: any) => {
     return state.player;
+  });
+  const { isStarted, gameResult } = useSelector((state: any) => {
+    return state.game;
   });
   const speedMarks = {
     1: "1",
@@ -22,16 +29,30 @@ const Dashboard = () => {
       key: "name",
     },
     {
-      title: "Points",
-      dataIndex: "Points",
+      title: "Round Points",
+      dataIndex: "roundPoints",
       key: "points",
     },
     {
       title: "Multiplier",
-      dataIndex: "Multiplier",
+      dataIndex: "detectedValue",
       key: "multiplier",
     },
   ];
+  const setThisRoundPoints = (v: number) => {
+    dispatch(setRoundPoints({ betPoints: v }));
+  };
+  const setThisRoundDetectedValue = (v: number) => {
+    dispatch(setRoundDetectedValue({ detectedValue: v }));
+  };
+
+  const startRound = () => {
+    startGame(
+      currentPlayer.playerName,
+      currentPlayer.betPoints,
+      currentPlayer.detectedValue
+    );
+  };
   return (
     <>
       <Flex vertical gap={8}>
@@ -42,6 +63,7 @@ const Dashboard = () => {
               initialValue={0}
               step={25}
               precision={0}
+              setNumberValue={setThisRoundPoints}
             />
           </Col>
           <Col md={12}>
@@ -50,13 +72,28 @@ const Dashboard = () => {
               initialValue={0}
               step={0.25}
               precision={2}
+              setNumberValue={setThisRoundDetectedValue}
             />
           </Col>
         </Row>
 
-        <Button block>Start</Button>
+        <Button
+          block
+          onClick={startRound}
+          disabled={
+            currentPlayer.detectedValue <= 0 ||
+            currentPlayer.betPoints <= 0 ||
+            isStarted
+          }
+        >
+          Start
+        </Button>
 
-        <ResultTable columns={columns} data={players} header={"Current Round"} />
+        <ResultTable
+          columns={columns}
+          data={gameResult}
+          header={"Current Round"}
+        />
         <Flex justify="center" align="center">
           <Typography.Text>{"Game Speed"}</Typography.Text>
         </Flex>

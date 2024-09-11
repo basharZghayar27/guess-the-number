@@ -1,11 +1,12 @@
 import React from "react";
 import "./App.css";
-import { useSelector } from "react-redux";
 import { Card, Col, ConfigProvider, Row, theme } from "antd";
 import SignUp from "./components/sign-up/SignUp";
 import Dashboard from "./components/dashboard/Dashboard";
 import RankingBoard from "./components/ranking-board/RankingBoard";
 import { useSocket } from "./hooks/use-socket/useSocket";
+import ResultCard from "./components/result/Result";
+import ChatComponent from "./components/chat/Chat";
 
 const App: React.FC = () => {
   const { isConnected } = useSocket();
@@ -23,6 +24,9 @@ const App: React.FC = () => {
             colorPrimaryHover: "#fff",
             colorBgContainer: "#ff416c",
           },
+          Statistic: {
+            contentFontSize: 72,
+          },
         },
       }}
     >
@@ -32,11 +36,16 @@ const App: React.FC = () => {
             {!isConnected ? <SignUp /> : <Dashboard />}
           </Card>
         </Col>
-        <Col md={12} xl={16}>
-          <Card style={{ width: "100%" }}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
+        <Col md={12} xl={16} style={{ height: "461px" }}>
+          <Card
+            style={{ width: "100%", height: "100%" }}
+            styles={{
+              body: {
+                height: "100%",
+              },
+            }}
+          >
+            <ResultCard />
           </Card>
         </Col>
         <Col md={12} lg={12}>
@@ -46,9 +55,7 @@ const App: React.FC = () => {
         </Col>
         <Col md={12} lg={12}>
           <Card style={{ width: "100%" }}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
+            <ChatComponent />
           </Card>
         </Col>
       </Row>

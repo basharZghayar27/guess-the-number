@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Flex, Space, Typography } from "antd";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 
@@ -7,6 +7,7 @@ export type TNumberInput = {
   initialValue: number;
   step?: number;
   precision: number;
+  setNumberValue: (v: number) => void;
 };
 
 const NumberInput: React.FC<TNumberInput> = ({
@@ -14,6 +15,7 @@ const NumberInput: React.FC<TNumberInput> = ({
   initialValue = 0,
   step = 1,
   precision = 2,
+  setNumberValue,
 }) => {
   const [value, setValue] = useState(initialValue);
 
@@ -30,6 +32,10 @@ const NumberInput: React.FC<TNumberInput> = ({
       );
     }
   };
+
+  useEffect(() => {
+    setNumberValue(value);
+  }, [value]);
 
   return (
     <Card>
