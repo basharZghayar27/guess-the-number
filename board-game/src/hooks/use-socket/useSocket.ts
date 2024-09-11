@@ -23,8 +23,7 @@ export const useSocket = () => {
     });
 
     socket.on("playerList", (players) => {
-      console.log("TEst", players);
-      
+      setIsConnected(true)
       dispatch(setPlayers(players));
     });
 
@@ -47,9 +46,8 @@ export const useSocket = () => {
 
   const createPlayer = useCallback((playerName: string) => {
     setIsConnected(true);
-    dispatch(setConnected(true));
     socket.emit("createPlayer", playerName);
-  }, [dispatch]);
+  }, []);
 
   const startGame = useCallback((betPoints: number, detectedValue: number) => {
     socket.emit("startGame", { betPoints, detectedValue });

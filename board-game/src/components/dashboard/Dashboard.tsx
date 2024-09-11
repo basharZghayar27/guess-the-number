@@ -2,15 +2,12 @@ import { Button, Col, Flex, Row, Slider, Typography } from "antd";
 import React from "react";
 import NumberInput from "../shared/NumberInput";
 import ResultTable from "../shared/ResultTable";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
-  const data = [
-    { Name: "Alice", Points: 150, Multiplier: 1.5 },
-    { Name: "Bob", Points: 120, Multiplier: 1.2 },
-    { Name: "Charlie", Points: 180, Multiplier: 2.0 },
-    { Name: "Diana", Points: 110, Multiplier: 1.1 },
-    { Name: "Eve", Points: 200, Multiplier: 2.5 },
-  ];
+  const { players } = useSelector((state: any) => {
+    return state.player;
+  });
   const speedMarks = {
     1: "1",
     2: "2",
@@ -21,7 +18,7 @@ const Dashboard = () => {
   const columns = [
     {
       title: "Name",
-      dataIndex: "Name",
+      dataIndex: "playerName",
       key: "name",
     },
     {
@@ -59,7 +56,7 @@ const Dashboard = () => {
 
         <Button block>Start</Button>
 
-        <ResultTable columns={columns} data={data} header={"Current Round"} />
+        <ResultTable columns={columns} data={players} header={"Current Round"} />
         <Flex justify="center" align="center">
           <Typography.Text>{"Game Speed"}</Typography.Text>
         </Flex>

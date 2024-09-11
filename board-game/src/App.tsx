@@ -8,8 +8,7 @@ import RankingBoard from "./components/ranking-board/RankingBoard";
 import { useSocket } from "./hooks/use-socket/useSocket";
 
 const App: React.FC = () => {
-  const isConnected = useSelector((state: any) => state?.game?.isConnected);
-
+  const { isConnected } = useSocket();
   return (
     <ConfigProvider
       theme={{

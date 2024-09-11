@@ -20,7 +20,7 @@ const io = new Server(server, {
  */
 
 /** @type {Player[]} */
-const players = [];
+let players = [];
 /** @type {Player[]} */
 let generatedPlayers = [];
 
@@ -52,13 +52,14 @@ io.on("connection", (socket) => {
 
   // When a player is created
   socket.on("createPlayer", (playerName) => {
+    players = [];
     const player = {
       playerName,
       points: 1000,
     };
     players.push(player);
     // Send the list of generated players along with the newly created player
-    if (generatedPlayers.length === 0) generatePlayers();    
+    if (generatedPlayers.length === 0) generatePlayers();
     socket.emit("playerList", [...players, ...generatedPlayers]);
   });
 
