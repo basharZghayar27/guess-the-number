@@ -11,7 +11,7 @@ export const store = configureStore({
     game: gameReducer,
   },
 });
-
+// Check the store setup by dispatching a test action
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
